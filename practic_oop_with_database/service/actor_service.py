@@ -49,6 +49,7 @@ class ActorService :
         # self.__logApplication.log.debug(actor)
         return actor
 
+
     # when we do something to database , do not forget commit()
     def removeActorById(self, id):
         # if you wanna know all methods , you should specify type
@@ -65,6 +66,58 @@ class ActorService :
         return row == 1
 
 
+    def editActor(self, actor:Actor,id:int):
+        # if you wanna know all methods , you should specify type
+        connect : MySQLConnectionAbstract  = self.__connectDatabase.connect
+        cursor : MySQLCursorAbstract = connect.cursor()
+        sql = "update actors set actor_name = %s , actor_following = %s where actor_id = %s;"
+        value = (actor.actorName,actor.actorFollowing,id)  # have to be tuple type!!
+        cursor.execute(sql, value)  # dynamic values mark by %s
+        row = cursor.rowcount # 1 means present in the table and 0 means deleted
+        connect.commit() # ***
+        connect.close()
+        cursor.close()
+        # self.__logApplication.log.debug(actor)
+        return row == 1
+
+    def saveActor(self, actor: Actor):
+        # if you wanna know all methods , you should specify type
+        connect: MySQLConnectionAbstract = self.__connectDatabase.connect
+        cursor: MySQLCursorAbstract = connect.cursor()
+        sql = "insert into actors (actor_name,actor_following) values (%s,%s)"
+        value = (actor.actorName, actor.actorFollowing)  # have to be tuple type!!
+        cursor.execute(sql, value)  # dynamic values mark by %s
+        row = cursor.rowcount  # 1 means present in the table and 0 means deleted
+        connect.commit()  # ***
+        connect.close()
+        cursor.close()
+        return row == 1
+
+    def saveManyActors(self, actors: list[Actor]):
+        # if you wanna know all methods , you should specify type
+        connect: MySQLConnectionAbstract = self.__connectDatabase.connect
+        cursor: MySQLCursorAbstract = connect.cursor()
+        sql = "insert into actors (actor_name,actor_following) values (%s,%s)"
+        """
+        # we save all the row data to be inserted in a data variable
+        [("Vani", "HR", "100000"),
+         ("Krish", "Accounts", "60000"),
+         ("Aishwarya", "Sales", "25000"),
+         ("Govind", "Marketing", "40000")]
+         """
+        value = []
+        index = 0
+        for actor in actors:
+            value.insert(index, (actor.actorName,actor.actorFollowing) )
+            index = index+1
+        cursor.executemany(sql, value)
+        row = cursor.rowcount  # 1 or more means affect of rows
+        connect.commit()  # ***
+        connect.close()
+        cursor.close()
+        return row >= 1
+
+
     def convertSetToActor(self, colum0, column1, column2):
         id = int(colum0)
         name = str(column1)
@@ -73,8 +126,8 @@ class ActorService :
 
 
 
-
-"""       
+"""      
+ 
 # Reads
 for actor in ActorService().getAllActors() :
     print(actor)
@@ -85,6 +138,14 @@ print(ActorService().getActorById(1))
 # Delete
 print(ActorService().removeActorById(8))
 
+# Update
+print(ActorService().editActor(Actor(0,"Will Smith",160000000),1))
+
+# Create
+print(ActorService().saveActor(Actor(0,"Kevin Owner",70000000)))
+
+# Creates
+actor1 = actor2 = actor3 = Actor(0,"Kevin Owner",70000000)
+print(ActorService().saveManyActors([actor1,actor2]))
 
 """
-
