@@ -1,0 +1,5 @@
+** About Python
+Using the float() function
+We can convert a string to float in Python using the float() function.
+This is a built-in function used to convert an object to a floating point number.
+Internally, the float() function calls specified object __float__() function.
