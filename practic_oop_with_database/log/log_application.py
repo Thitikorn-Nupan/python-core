@@ -8,7 +8,7 @@ class LogApplication :
         self.log.setLevel(logging.DEBUG)
 
         __consoleHandler = logging.StreamHandler()
-        __consoleHandler.setLevel(logging.DEBUG)
+        # __consoleHandler.setLevel(logging.DEBUG)
 
         # create formatter
         __formatter = logging.Formatter('%(asctime)s - %(filename)s - %(levelname)s - %(message)s')

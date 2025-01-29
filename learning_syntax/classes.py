@@ -125,4 +125,58 @@ class Student:
 # print(Student(1001,"alex ryder",23).getId())
 
 
+# *** Way to generate getter/setter
+class Author :
+    # private attributes
+    __aid : str
+    __fullname : str
+    __age : int
+    __alive : bool
 
+    def __init__(self,aid:str,fullname:str,age:int,alive:bool):
+        self.__aid = aid
+        self.__fullname = fullname
+        self.__age = age
+        self.__alive = alive
+    #
+    # *** Way to generate getter/setter
+    #
+    @property # this is getter
+    def age(self):
+        return self.__age
+
+    @age.setter # this is setter
+    def age(self, value):
+        self.__age = value
+
+    # When call get author.age
+    # When call set author.age = "A001"
+
+    @property
+    def alive(self):
+        return self.__alive
+
+    @alive.setter
+    def alive(self, value):
+        self.__alive = value
+
+    @property
+    def aid(self):
+        return self.__aid
+
+    @aid.setter
+    def aid(self, value):
+        self.__aid = value
+
+    @property
+    def fullname(self):
+        return self.__fullname
+
+    @fullname.setter
+    def fullname(self, value):
+        self.__fullname = value
+
+    def __str__(self):
+        return F"aid : {self.__aid}, fullname : {self.__fullname} , age : {self.__age} , alive : {self.__alive}"
+
+print(Author('A001','AAA AAA',45,True))
