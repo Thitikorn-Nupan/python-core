@@ -1,6 +1,7 @@
 import json
 
 class Student :
+
     def __init__(self,id : int,fullname : str):
         self.id = id
         self.fullname = fullname
