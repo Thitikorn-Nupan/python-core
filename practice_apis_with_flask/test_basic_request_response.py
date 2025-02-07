@@ -1,8 +1,14 @@
+import os
 from http import HTTPStatus
-from flask import Flask, jsonify, request  # Flask library for build apis
+from idlelib.colorizer import DEBUG
+
+from flask import Flask, jsonify, request, render_template  # Flask library for build apis
+from werkzeug.utils import secure_filename
+from flask import url_for
 
 from log import log_application as fileLog
 from practice_apis_with_flask.model.student import Student
+
 
 logApplication = fileLog.LogApplication(__file__)
 log = logApplication.log
@@ -86,6 +92,47 @@ def fetchStudent():
                     # 'data' : Student(id, 'Alex Owner').__dict__ #.__dir__ return json format
                     'data': studentService.read(id)
                     }), HTTPStatus.OK
+
+__baseUrlTemplate="/app"
+upload_folder = os.path.join('static', 'images')
+app.config['UPLOAD'] = upload_folder
+
+
+"""@app.route(__baseUrl + "/upload.file", methods=['POST'])
+def uploadStudentFile():
+    if request.method == 'POST':
+        file = request.files['file']
+       # file.save(file.filename) # it will save to this folder
+        filename = secure_filename(file.filename)
+        # file.save(os.path.join(r"B:\practice-pyhon\lab_core\images", filename)) # add file to that path
+        file.save(os.path.join(app.config['UPLOAD'], filename)) # add file to that path
+    return jsonify({'status': HTTPStatus.OK,
+                    # 'data' : Student(id, 'Alex Owner').__dict__ #.__dir__ return json format
+                    'data': True
+                    }), HTTPStatus.OK
+"""
+
+# @app.route(__baseUrlTemplate + "/index", methods=['GET','POST'])
+@app.route( "/index", methods=['GET','POST'])
+def displayTemplate():
+    # Flask will look for templates in the templates folder. So if your application is a module, this folder is next to that module,
+    # if it’s a package it’s actually inside your package
+    # example application (folder) -> main.py service (fd) , entity (fd) ,..., (folders) , *** templates (fd)
+    if request.method == 'GET':
+        return render_template('index.html')
+    elif request.method=='POST':
+        file = request.files['file']
+        # file.save(file.filename) # it will save to this folder
+        filename = secure_filename(file.filename)
+        # file.save(os.path.join(r"B:\practice-pyhon\lab_core\images", filename)) # add file to that path
+        filePath = os.path.join(app.config['UPLOAD'], filename)
+        file.save(filePath)  # add file to that path
+        print(filePath)
+        print(filePath[:filePath.find('/app')].strip())
+
+        return render_template('index.html', image=filePath)
+
+
 
 
 app.run(host='localhost', port=8083)
